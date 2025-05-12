@@ -1,0 +1,24 @@
+Desarrollar una aplicación de consola que gestione un grupo de procesos que requieren acceso a la CPU. Cada proceso deberá registrar los siguientes datos: identificador (PID), nombre, tipo de proceso, tamaño, prioridad, y fecha y hora de su última modificación. El sistema debe presentar un menú interactivo que permita ejecutar las operaciones requeridas para la administración eficiente de los procesos. 
+
+Agregar nuevos procesos: 
+Implementar la función para agregar procesos al grupo, respetando el orden de llegada. Se deberán ingresar todos los datos del proceso: PID, nombre, tipo, tamaño, prioridad, fecha y hora de última modificación. 
+
+Modificación de prioridad individual: 
+Permitir la actualización del campo prioridad de un proceso específico, identificado por su PID. 
+
+Terminar proceso (atención de procesos): 
+Implementar la opción para retirar del grupo el proceso que se encuentra al frente (el primero en llegar), simulando su atención por la CPU. 
+
+Visualización completa de procesos: 
+Diseñar una función que muestre todos los procesos, desplegando de manera ordenada y clara cada uno de sus atributos. 
+
+Modificación masiva de prioridad por mes: 
+Dado un mes ingresado por el usuario, actualizar la prioridad a “baja” para todos los procesos cuya fecha de última modificación corresponda a ese mes. 
+
+Filtrado por tipo y por intervalo horario: 
+
+a) Eliminar todos los procesos cuyo tipo coincida con el valor ingresado por el usuario. 
+
+b) Crear una cola con los procesos cuya hora de última modificación se encuentre dentro de un intervalo definido por el usuario, e imprimir su contenido automáticamente. 
+
+ 

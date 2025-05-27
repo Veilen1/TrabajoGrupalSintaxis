@@ -1,59 +1,55 @@
+from datetime import datetime
 
-proceso = ["","",0,0,0,""]
-#Identrificador (PID), nombre, tipo de proceso, tamaño, prioridad, fecha y hora
-
-def crearProceso():
-    proceso = ["","",0,0,0,""]
+def crear_proceso(pid, nombre, tipo_proceso, tamaño, prioridad):
+    """Crea un nuevo proceso"""
+    proceso = {
+        'pid': pid,
+        'nombre': nombre,
+        'tipo_proceso': tipo_proceso,
+        'tamaño': tamaño,
+        'prioridad': prioridad,
+        'fecha_modificacion': datetime.now()
+    }
     return proceso
 
-def cargarProceso(proceso,pid,nom,tproc,tam,pri,fh):
-    proceso[0]=pid
-    proceso[1]=nom
-    proceso[2]=tproc
-    proceso[3]=tam
-    proceso[4]=pri
-    proceso[5]=fh
+def obtener_pid(proceso):
+    """Obtiene el PID del proceso"""
+    return proceso['pid']
 
-def verPID(proceso):
-    return proceso[0]
+def obtener_nombre(proceso):
+    """Obtiene el nombre del proceso"""
+    return proceso['nombre']
 
-def verNombre(proceso):
-    return proceso[1]
+def obtener_tipo_proceso(proceso):
+    """Obtiene el tipo del proceso"""
+    return proceso['tipo_proceso']
 
-def verTipo(proceso):
-    return proceso[2]
+def obtener_tamaño(proceso):
+    """Obtiene el tamaño del proceso"""
+    return proceso['tamaño']
 
-def verTamaño(proceso):
-    return proceso[3]
+def obtener_prioridad(proceso):
+    """Obtiene la prioridad del proceso"""
+    return proceso['prioridad']
 
-def verPrioridad(proceso):
-    return proceso[4]
+def obtener_fecha_modificacion(proceso):
+    """Obtiene la fecha de modificación del proceso"""
+    return proceso['fecha_modificacion']
 
-def verFechayHora(proceso):
-    return proceso[5]
+def establecer_prioridad(proceso, nueva_prioridad):
+    """Establece una nueva prioridad para el proceso"""
+    proceso['prioridad'] = nueva_prioridad
+    proceso['fecha_modificacion'] = datetime.now()
 
-def modPID(proceso, nuevoPID):
-    proceso[0] = nuevoPID
+def proceso_a_cadena(proceso):
+    """Convierte el proceso a cadena"""
+    fecha_str = proceso['fecha_modificacion'].strftime('%d/%m/%Y %H:%M:%S')
+    return (f"PID: {proceso['pid']} | Nombre: {proceso['nombre']} | "
+            f"Tipo: {proceso['tipo_proceso']} | Tamaño: {proceso['tamaño']}KB | "
+            f"Prioridad: {proceso['prioridad']} | "
+            f"Última modificación: {fecha_str}")
 
-def modNombre(proceso, nuevoNom):
-    proceso[1] = nuevoNom
-
-def modTipo(proceso, nuevoTipo):
-    proceso[2] = nuevoTipo
-
-def modTamaño(proceso, nuevoTamaño):
-    proceso[3] = nuevoTamaño
-
-def modPrioridad(proceso, nuevoPrioridad):
-    proceso[4] = nuevoPrioridad
-
-def modFYH(proceso, nuevoFYH):
-    proceso[5] = nuevoFYH
-
-def asignarProceso(proceso1,proceso2):
-    proceso2[0]=proceso1[0]
-    proceso2[1]=proceso1[1]
-    proceso2[2]=proceso1[2]
-    proceso2[3]=proceso1[3]
-    proceso2[4]=proceso1[4]
-    proceso2[5]=proceso1[5]
+# Ejemplo de uso
+if __name__ == "__main__":
+    proceso1 = crear_proceso(1001, "navegador.exe", "usuario", 2048, "alta")
+    print(proceso_a_cadena(proceso1))

@@ -1,6 +1,31 @@
 import TADProceso as proceso_tad
 import TADGrupo as grupo_tad
 
+def buscar_proceso_por_pid(grupo, pid):
+    """Busca un proceso por su PID"""
+    for proceso in grupo:
+        if proceso_tad.obtener_pid(proceso) == pid:
+            return proceso
+    return None
+
+def modificar_prioridad_por_pid(grupo, pid, nueva_prioridad):
+    """Modifica la prioridad de un proceso específico"""
+    proceso = buscar_proceso_por_pid(grupo, pid)
+    if proceso is not None:
+        proceso_tad.establecer_prioridad(proceso, nueva_prioridad)
+        return True
+    return False
+
+def modificar_prioridad_por_mes(grupo, mes):
+    """Modifica la prioridad a 'baja' para procesos del mes especificado"""
+    modificados = 0
+    for proceso in grupo:
+        fecha_mod = proceso_tad.obtener_fecha_modificacion(proceso)
+        if fecha_mod.month == mes:
+            proceso_tad.establecer_prioridad(proceso, "baja")
+            modificados += 1
+    return modificados
+
 def mostrar_menu():
     """Muestra el menú principal"""
     print("\n" + "="*50)
@@ -184,6 +209,16 @@ def eliminar_procesos_por_tipo(grupo):
     eliminados = grupo_tad.eliminar_procesos_por_tipo(grupo, tipo_proceso)
     print(f"Se eliminaron {eliminados} procesos de tipo '{tipo_proceso}'")
 
+def filtrar_por_intervalo_horarioTAD(grupo, hora_inicio, hora_fin):
+    """Crea una cola con procesos del intervalo horario especificado"""
+    cola_filtrada = []
+    for proceso in grupo:
+        fecha_mod = proceso_tad.obtener_fecha_modificacion(proceso)
+        hora_proceso = fecha_mod.hour
+        if hora_inicio <= hora_proceso <= hora_fin:
+            cola_filtrada.append(proceso)
+    return cola_filtrada
+
 def filtrar_por_intervalo_horario(grupo):
     """Filtrar procesos por intervalo horario con validaciones integradas"""
     print("\n--- Filtrar por Horario ---")
@@ -219,7 +254,7 @@ def filtrar_por_intervalo_horario(grupo):
         return
     
     # Filtrar y mostrar automáticamente
-    cola_filtrada = grupo_tad.filtrar_por_intervalo_horario(grupo, hora_inicio, hora_fin)
+    cola_filtrada = filtrar_por_intervalo_horarioTAD(grupo, hora_inicio, hora_fin)
     
     print(f"\nProcesos en intervalo {hora_inicio:02d}:00 - {hora_fin:02d}:59:")
     if len(cola_filtrada) == 0:
@@ -240,6 +275,7 @@ def cargar_datos_ejemplo(grupo):
     for pid, nombre, tipo, tamaño, prioridad in procesos:
         proceso = proceso_tad.crear_proceso(pid, nombre, tipo, tamaño, prioridad)
         grupo_tad.agregar_proceso(grupo, proceso)
+
 
 def main():
     """Función principal del programa"""
@@ -270,3 +306,5 @@ def main():
             break
         else:
             print("Opción inválida. Seleccione 1-8")
+
+main()

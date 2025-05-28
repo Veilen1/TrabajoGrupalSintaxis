@@ -48,5 +48,3 @@ def proceso_a_cadena(proceso):
             f"Tipo: {proceso['tipo_proceso']} | Tamaño: {proceso['tamaño']}KB | "
             f"Prioridad: {proceso['prioridad']} | "
             f"Última modificación: {fecha_str}")
-
-

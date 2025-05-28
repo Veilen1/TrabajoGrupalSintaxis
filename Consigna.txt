@@ -19,7 +19,4 @@ Filtrado por tipo y por intervalo horario:
 
 a) Eliminar todos los procesos cuyo tipo coincida con el valor ingresado por el usuario. 
 
-b) Crear una cola con los procesos cuya hora de última modificación se encuentre dentro de un intervalo definido por el usuario, e imprimir su contenido automáticamente. 
-
- Holaaaaaaaa
-aaaaa
+b) Crear una cola con los procesos cuya hora de última modificación se encuentre dentro de un intervalo definido por el usuario, e imprimir su contenido automáticamente.

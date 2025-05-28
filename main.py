@@ -28,18 +28,18 @@ def modificar_prioridad_por_mes(grupo, mes):
 
 def mostrar_menu():
     """Muestra el menú principal"""
-    print("\n" + "="*50)
-    print("    SISTEMA DE GESTIÓN DE PROCESOS")
-    print("="*50)
-    print("1. Agregar nuevo proceso")
-    print("2. Modificar prioridad individual")
-    print("3. Terminar proceso")
-    print("4. Visualizar procesos")
-    print("5. Modificar prioridad por mes")
-    print("6. Eliminar procesos por tipo")
-    print("7. Filtrar por intervalo horario")
-    print("8. Salir")
-    print("="*50)
+    print("\n" + "="*60)
+    print("            SISTEMA DE GESTIÓN DE PROCESOS      ")
+    print("="*60)
+    print("1. ➕ Agregar nuevo proceso")
+    print("2. 🔃 Modificar prioridad individual")
+    print("3. ❌ Terminar proceso")
+    print("4. 👁️  Visualizar procesos")
+    print("5. 🛠️  Modificar prioridad por mes")
+    print("6. 🧹 Eliminar procesos por tipo")
+    print("7. 🕑 Filtrar por intervalo horario")
+    print("8. 🚪 Salir")
+    print("="*60)
 
 def agregar_proceso(grupo):
     """Agregar nuevo proceso con validaciones integradas"""
@@ -49,23 +49,23 @@ def agregar_proceso(grupo):
     try:
         pid = int(input("PID: "))
         if pid <= 0:
-            print("Error: PID debe ser un número positivo")
+            print("Error: El PID debe ser un número positivo")
             return
         
         # Verificar que no exista el PID
         for p in grupo:
             if proceso_tad.obtener_pid(p) == pid:
-                print(f"Error: Ya existe un proceso con PID {pid}")
+                print(f"Error: Ya existe un proceso con el PID {pid}")
                 return
                 
     except ValueError:
-        print("Error: PID debe ser un número entero")
+        print("Error: El PID debe ser un número entero")
         return
     
     # Solicitar y validar nombre
     nombre = input("Nombre: ").strip()
     if not nombre:
-        print("Error: Nombre no puede estar vacío")
+        print("Error: El nombre no puede estar vacío")
         return
     
     # Solicitar y validar tipo
@@ -79,10 +79,10 @@ def agregar_proceso(grupo):
     try:
         tamaño = int(input("Tamaño (KB): "))
         if tamaño <= 0:
-            print("Error: Tamaño debe ser un número positivo")
+            print("Error: El tamaño debe ser un número positivo")
             return
     except ValueError:
-        print("Error: Tamaño debe ser un número entero")
+        print("Error: El tamaño debe ser un número entero")
         return
     
     # Solicitar y validar prioridad
@@ -95,7 +95,7 @@ def agregar_proceso(grupo):
     # Crear y agregar proceso
     nuevo_proceso = proceso_tad.crear_proceso(pid, nombre, tipo_proceso, tamaño, prioridad)
     grupo_tad.agregar_proceso(grupo, nuevo_proceso)
-    print(f"Proceso {pid} agregado exitosamente")
+    print(f"\n✅ Proceso {pid} agregado exitosamente.\n" + "-"*60)
 
 def modificar_prioridad_individual(grupo):
     """Modificar prioridad de un proceso específico con validaciones integradas"""
@@ -109,13 +109,13 @@ def modificar_prioridad_individual(grupo):
     # Solicitar y validar PID
     try:
         grupo_tad.mostrar_procesos(grupo)
-        pid = int(input("PID del proceso a modificar: "))
+        pid = int(input("Ingrese el PID del proceso a modificar: "))
 
         if pid <= 0:
-            print("Error: PID debe ser un número positivo")
+            print("Error: El PID debe ser un número positivo")
             return
     except ValueError:
-        print("Error: PID debe ser un número entero")
+        print("Error: El PID debe ser un número entero")
         return
     
     # Buscar proceso
@@ -126,14 +126,14 @@ def modificar_prioridad_individual(grupo):
             break
     
     if not proceso_encontrado:
-        print(f"Error: No se encontró proceso con PID {pid}")
+        print(f"Error: No se encontró el proceso con PID {pid}")
         return
     
     # Solicitar y validar nueva prioridad
     print("Prioridades disponibles: alta, media, baja")
     nueva_prioridad = input("Nueva prioridad: ").strip().lower()
     if nueva_prioridad not in ['alta', 'media', 'baja']:
-        print("Error: Prioridad debe ser 'alta', 'media' o 'baja'")
+        print("Error: La prioridad debe ser 'alta', 'media' o 'baja'")
         return
     
     # Modificar prioridad
@@ -175,10 +175,10 @@ def modificar_prioridad_por_mes(grupo):
     try:
         mes = int(input("Mes (1-12): "))
         if mes < 1 or mes > 12:
-            print("Error: Mes debe estar entre 1 y 12")
+            print("Error: El mes debe estar entre 1 y 12")
             return
     except ValueError:
-        print("Error: Mes debe ser un número entero")
+        print("Error: El mes debe ser un número entero")
         return
     
     # Modificar prioridad
@@ -232,10 +232,10 @@ def filtrar_por_intervalo_horario(grupo):
     try:
         hora_inicio = int(input("Hora inicio (0-23): "))
         if hora_inicio < 0 or hora_inicio > 23:
-            print("Error: Hora de inicio debe estar entre 0 y 23")
+            print("Error: La hora de inicio debe estar entre 0 y 23")
             return
     except ValueError:
-        print("Error: Hora de inicio debe ser un número entero")
+        print("Error: La hora de inicio debe ser un número entero")
         return
     
     # Solicitar y validar hora de fin
@@ -250,7 +250,7 @@ def filtrar_por_intervalo_horario(grupo):
     
     # Validar que hora inicio <= hora fin
     if hora_inicio > hora_fin:
-        print("Error: Hora de inicio debe ser menor o igual a hora de fin")
+        print("Error: La hora de inicio debe ser menor o igual a hora de fin")
         return
     
     # Filtrar y mostrar automáticamente

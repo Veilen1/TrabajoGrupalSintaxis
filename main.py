@@ -269,4 +269,6 @@ def main():
             print("Saliendo del sistema...")
             break
         else:
-            print("Opción inválida. Seleccione 1-8")
+            print("Opción inválida. Seleccione 1-8")    
+
+main()

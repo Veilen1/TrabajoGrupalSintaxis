@@ -83,7 +83,9 @@ def modificar_prioridad_individual(grupo):
     
     # Solicitar y validar PID
     try:
-        pid = int(input("PID del proceso: "))
+        grupo_tad.mostrar_procesos(grupo)
+        pid = int(input("PID del proceso a modificar: "))
+
         if pid <= 0:
             print("Error: PID debe ser un número positivo")
             return

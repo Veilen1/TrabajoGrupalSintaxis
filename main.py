@@ -270,6 +270,3 @@ def main():
             break
         else:
             print("Opción inválida. Seleccione 1-8")
-
-if __name__ == "__main__":
-    main()

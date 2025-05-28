@@ -49,7 +49,4 @@ def proceso_a_cadena(proceso):
             f"Prioridad: {proceso['prioridad']} | "
             f"Última modificación: {fecha_str}")
 
-# Ejemplo de uso
-if __name__ == "__main__":
-    proceso1 = crear_proceso(1001, "navegador.exe", "usuario", 2048, "alta")
-    print(proceso_a_cadena(proceso1))
+

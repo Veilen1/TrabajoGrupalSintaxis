@@ -78,9 +78,3 @@ def mostrar_procesos(grupo):
         print(f"{i}. {proceso_tad.proceso_a_cadena(proceso)}")
     print("-" * 80)
 
-# Ejemplo de uso
-if __name__ == "__main__":
-    grupo = crear_grupo()
-    proceso1 = proceso_tad.crear_proceso(1001, "navegador.exe", "usuario", 2048, "alta")
-    agregar_proceso(grupo, proceso1)
-    mostrar_procesos(grupo)

@@ -2,6 +2,31 @@ import TADProceso as proceso_tad
 import TADGrupo as grupo_tad
 from datetime import datetime
 
+def buscar_proceso_por_pid(grupo, pid):
+    """Busca un proceso por su PID"""
+    for proceso in grupo:
+        if proceso_tad.obtener_pid(proceso) == pid:
+            return proceso
+    return None
+
+def modificar_prioridad_por_pid(grupo, pid, nueva_prioridad):
+    """Modifica la prioridad de un proceso específico"""
+    proceso = buscar_proceso_por_pid(grupo, pid)
+    if proceso is not None:
+        proceso_tad.establecer_prioridad(proceso, nueva_prioridad)
+        return True
+    return False
+
+def modificar_prioridad_por_mes(grupo, mes):
+    """Modifica la prioridad a 'baja' para procesos del mes especificado"""
+    modificados = 0
+    for proceso in grupo:
+        fecha_mod = proceso_tad.obtener_fecha_modificacion(proceso)
+        if fecha_mod.month == mes:
+            proceso_tad.establecer_prioridad(proceso, "baja")
+            modificados += 1
+    return modificados
+
 def mostrar_menu():
     """Muestra el menú principal"""
     print("\n" + "="*60)

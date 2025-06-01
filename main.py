@@ -2,15 +2,10 @@ from tadProceso import *
 from tadGrupo import *
 from datetime import datetime
 
-# Crear el grupo de procesos
 grupo = crearGrupo()
 
-# Menú principal
-opcion = 1
-while opcion != 0:
-    print("\n" + "="*50)
-    print("    SISTEMA DE GESTIÓN DE PROCESOS")
-    print("="*50)
+while True:
+    print("    SISTEMA GESTION DE PROCESOS")
     print("1. Agregar nuevo proceso")
     print("2. Modificar prioridad individual")
     print("3. Terminar proceso (atender primero)")
@@ -19,30 +14,73 @@ while opcion != 0:
     print("6. Eliminar procesos por tipo")
     print("7. Filtrar por intervalo horario")
     print("0. Salir")
-    print("-"*50)
     
-    opcion = int(input("Seleccione una opción: "))
-    
+    try:
+        opcion = int(input("Seleccione una opcion: "))
+    except ValueError:
+        print("Error, debe ingresar un numero del menu")
+        continue
+
+    if opcion == 0:
+        print("Saliendo del sistema...")
+        break
+
     if opcion == 1:
-        # Agregar nuevo proceso
-        print("\n--- AGREGAR NUEVO PROCESO ---")
-        p = crearProceso()
-        pid = int(input("Ingrese PID: "))
-        nombre = input("Ingrese nombre: ")
-        tipo = input("Ingrese tipo: ")
-        tamaño = int(input("Ingrese tamaño: "))
-        prioridad = input("Ingrese prioridad (alta/media/baja): ")
-        
-        print("Ingrese fecha y hora (formato: YYYY-MM-DD HH:MM)")
-        fecha_str = input("Fecha y hora: ")
-        fecha_hora = datetime.strptime(fecha_str, "%Y-%m-%d %H:%M")
-        
-        cargarProceso(p, pid, nombre, tipo, tamaño, prioridad, fecha_hora)
-        agregarProceso(grupo, p)
-        print("Proceso agregado exitosamente!")
+        while True:
+            print("\n--- AGREGAR NUEVO PROCESO ---")
+            p = crearProceso()
+            
+            while True:
+                try: #AGREGA UN PROCESO, EN CASO DE ERROR VUELVE A INGRESAR EL PID
+                    pid = int(input("Ingrese PID: "))
+                    break
+                except ValueError:
+                    print("El PID debe ser un numero entero")
+                    
+            while True:
+                try:
+                    nombre = input("Ingrese nombre: ").strip()
+                    break
+                except ValueError:
+                    if not nombre:
+                        print("Error, el nombre no puede estar vacio")
+
+            while True:
+                tipo = input("Ingrese tipo: Sistema / Usuario / Monitoreo\n").lower()
+                if tipo in ["usuario", "sistema", "monitoreo"]:
+                    break
+                else:
+                    print("Error, debe ingresar sistema / usuario / Monitoreo")
+
+            while True:
+                try:
+                    tamaño = int(input("Ingrese tamaño del proceso: "))
+                    break
+                except ValueError:
+                    print(" Error, debes ingresar un numero para el tamaño")
+
+            while True:
+                prioridad = input("Ingrese prioridad (alta/media/baja): ").lower()
+                if prioridad in ["alta", "media", "baja"]:
+                    break
+                else:
+                    print("Error, debes ingresar una opcion valida(alta,media o baja)")
+
+            while True:
+                print("Ingrese fecha y hora (formato: YYYY-MM-DD HH:MM)")
+                fecha_str = input("Fecha y hora: ")
+                try:
+                    fecha_hora = datetime.strptime(fecha_str, "%Y-%m-%d %H:%M")
+                    break
+                except ValueError:
+                    print(" Error , debes ingresar la fecha correctamente")
+
+            cargarProceso(p, pid, nombre, tipo, tamaño, prioridad, fecha_hora)
+            agregarProceso(grupo, p)
+            print("\nProceso agregado con exito \n")
+            break
     
     elif opcion == 2:
-        # Modificar prioridad individual
         print("\n--- MODIFICAR PRIORIDAD INDIVIDUAL ---")
         if estaVacio(grupo):
             print("No hay procesos en el sistema")
@@ -55,12 +93,11 @@ while opcion != 0:
                 print(f"Prioridad actual: {obtenerPrioridad(proceso)}")
                 nueva_prioridad = input("Ingrese nueva prioridad: ")
                 modificarPrioridad(proceso, nueva_prioridad)
-                print("Prioridad modificada exitosamente!")
+                print("Prioridad modificada")
             else:
                 print("Proceso no encontrado")
     
     elif opcion == 3:
-        # Terminar proceso (atender primero)
         print("\n--- TERMINAR PROCESO ---")
         if estaVacio(grupo):
             print("No hay procesos para atender")
@@ -68,15 +105,13 @@ while opcion != 0:
             proceso_atendido = quitarPrimero(grupo)
             print("Proceso atendido:")
             mostrarProceso(proceso_atendido)
-            print("Proceso terminado exitosamente!")
+            print("Proceso terminado con exito")
     
     elif opcion == 4:
-        # Visualizar todos los procesos
         print("\n--- TODOS LOS PROCESOS ---")
         mostrarTodos(grupo)
     
     elif opcion == 5:
-        # Modificar prioridad masiva por mes
         print("\n--- MODIFICAR PRIORIDAD POR MES ---")
         if estaVacio(grupo):
             print("No hay procesos en el sistema")
@@ -92,13 +127,11 @@ while opcion != 0:
             print(f"Se modificaron {contador} procesos a prioridad baja")
     
     elif opcion == 6:
-        # Eliminar procesos por tipo
-        print("\n--- ELIMINAR PROCESOS POR TIPO ---")
+        print("\n---ELIMINAR PROCESOS POR TIPO ---")
         if estaVacio(grupo):
             print("No hay procesos en el sistema")
         else:
             tipo_eliminar = input("Ingrese tipo de proceso a eliminar: ")
-            # Crear nuevo grupo sin los procesos del tipo especificado
             nuevo_grupo = crearGrupo()
             contador = 0
             for i in range(tamaño(grupo)):
@@ -107,7 +140,6 @@ while opcion != 0:
                     agregarProceso(nuevo_grupo, proceso)
                 else:
                     contador += 1
-            # Reemplazar el grupo original
             grupo.clear()
             for i in range(tamaño(nuevo_grupo)):
                 proceso = obtenerProceso(nuevo_grupo, i)
@@ -115,7 +147,6 @@ while opcion != 0:
             print(f"Se eliminaron {contador} procesos del tipo '{tipo_eliminar}'")
     
     elif opcion == 7:
-        # Filtrar por intervalo horario
         print("\n--- FILTRAR POR INTERVALO HORARIO ---")
         if estaVacio(grupo):
             print("No hay procesos en el sistema")
@@ -125,12 +156,10 @@ while opcion != 0:
             print("Ingrese hora final (formato HH:MM)")
             hora_fin = input("Hora fin: ")
             
-            # Convertir a objetos time para comparar
             from datetime import time
             inicio = datetime.strptime(hora_inicio, "%H:%M").time()
             fin = datetime.strptime(hora_fin, "%H:%M").time()
             
-            # Crear cola con procesos en el intervalo
             cola_filtrada = crearGrupo()
             for i in range(tamaño(grupo)):
                 proceso = obtenerProceso(grupo, i)
@@ -141,11 +170,8 @@ while opcion != 0:
             
             print(f"\nProcesos en el intervalo {hora_inicio} - {hora_fin}:")
             mostrarTodos(cola_filtrada)
-    
-    elif opcion == 0:
-        print("\n¡Gracias por usar el sistema!")
-    
-    else:
-        print("\nOpción inválida. Intente nuevamente.")
 
-print("Sistema finalizado.")
+    else:
+        print("Opcion no valida")
+
+print("Sistema finalizado")

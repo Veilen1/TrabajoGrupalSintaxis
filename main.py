@@ -1,5 +1,6 @@
 import TADProceso as proceso_tad
 import TADGrupo as grupo_tad
+from datetime import datetime
 
 def mostrar_menu():
     """Muestra el menú principal"""
@@ -112,7 +113,7 @@ def modificar_prioridad_individual(grupo):
         return
     
     # Modificar prioridad
-    grupo_tad.modificar_prioridad_por_pid(grupo, pid, nueva_prioridad)
+    modificar_prioridad_por_pid(grupo, pid, nueva_prioridad)
     print(f"Prioridad del proceso {pid} modificada a '{nueva_prioridad}'")
 
 def terminar_proceso(grupo):
@@ -157,7 +158,7 @@ def modificar_prioridad_por_mes(grupo):
         return
     
     # Modificar prioridad
-    modificados = grupo_tad.modificar_prioridad_por_mes(grupo, mes)
+    modificados = modificar_prioridad_por_mes(grupo, mes)
     
     # Mostrar resultado
     meses_nombres = ["", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -181,52 +182,8 @@ def eliminar_procesos_por_tipo(grupo):
         return
     
     # Eliminar procesos
-    eliminados = grupo_tad.eliminar_procesos_por_tipo(grupo, tipo_proceso)
+    eliminados = eliminar_procesos_por_tipo(grupo, tipo_proceso)
     print(f"Se eliminaron {eliminados} procesos de tipo '{tipo_proceso}'")
-
-def filtrar_por_intervalo_horario(grupo):
-    """Filtrar procesos por intervalo horario con validaciones integradas"""
-    print("\n--- Filtrar por Horario ---")
-    
-    # Verificar que hay procesos
-    if len(grupo) == 0:
-        print("No hay procesos en el sistema")
-        return
-    
-    # Solicitar y validar hora de inicio
-    try:
-        hora_inicio = int(input("Hora inicio (0-23): "))
-        if hora_inicio < 0 or hora_inicio > 23:
-            print("Error: La hora de inicio debe estar entre 0 y 23")
-            return
-    except ValueError:
-        print("Error: La hora de inicio debe ser un número entero")
-        return
-    
-    # Solicitar y validar hora de fin
-    try:
-        hora_fin = int(input("Hora fin (0-23): "))
-        if hora_fin < 0 or hora_fin > 23:
-            print("Error: Hora de fin debe estar entre 0 y 23")
-            return
-    except ValueError:
-        print("Error: Hora de fin debe ser un número entero")
-        return
-    
-    # Validar que hora inicio <= hora fin
-    if hora_inicio > hora_fin:
-        print("Error: La hora de inicio debe ser menor o igual a hora de fin")
-        return
-    
-    # Filtrar y mostrar automáticamente
-    cola_filtrada = grupo_tad.filtrar_por_intervalo_horario(grupo, hora_inicio, hora_fin)
-    
-    print(f"\nProcesos en intervalo {hora_inicio:02d}:00 - {hora_fin:02d}:59:")
-    if len(cola_filtrada) == 0:
-        print("No se encontraron procesos en el intervalo")
-    else:
-        for i, proceso in enumerate(cola_filtrada, 1):
-            print(f"{i}. {proceso_tad.proceso_a_cadena(proceso)}")
 
 def cargar_datos_ejemplo(grupo):
     """Carga datos de ejemplo"""
@@ -240,6 +197,91 @@ def cargar_datos_ejemplo(grupo):
     for pid, nombre, tipo, tamaño, prioridad in procesos:
         proceso = proceso_tad.crear_proceso(pid, nombre, tipo, tamaño, prioridad)
         grupo_tad.agregar_proceso(grupo, proceso)
+
+def buscar_proceso_por_pid(grupo, pid):
+    """Busca un proceso por su PID"""
+    for proceso in grupo:
+        if proceso_tad.obtener_pid(proceso) == pid:
+            return proceso
+    return None
+
+def modificar_prioridad_por_pid(grupo, pid, nueva_prioridad):
+    """Modifica la prioridad de un proceso específico"""
+    proceso = buscar_proceso_por_pid(grupo, pid)
+    if proceso is not None:
+        proceso_tad.establecer_prioridad(proceso, nueva_prioridad)
+        return True
+    return False
+
+
+
+def modificar_prioridad_por_mes(grupo):
+    """Solicita al usuario un mes y modifica la prioridad a 'baja' para procesos de ese mes"""
+    mes = int(input("Ingrese el número del mes que desea modificar (1-12): "))
+    modificados = 0
+    for proceso in grupo:
+        fecha_mod = proceso_tad.obtener_fecha_modificacion(proceso)
+        if fecha_mod.month == mes and proceso_tad.obtener_prioridad(proceso) != "baja":
+            # Solo modificar si la prioridad no es ya 'baja'
+            proceso_tad.establecer_prioridad(proceso, "baja")
+            modificados += 1
+    print(f"La cantidad de procesos modificados fueron: {modificados}")
+
+def eliminar_procesos_por_tipo(grupo, tipo_proceso):
+    """Elimina todos los procesos del tipo especificado"""
+    num_tipo = int(input("Ingrese el tipo de proceso a eliminar (1: sistema, 2: usuario, 3: tiempo_real): "))
+    if num_tipo == 1:
+        tipo_proceso = "sistema"
+    elif num_tipo == 2:
+        tipo_proceso = "usuario"
+    elif num_tipo == 3:
+        tipo_proceso = "tiempo_real"
+    else:
+        print("Tipo de proceso inválido")
+    eliminados = 0
+    i = 0
+    while i < len(grupo):
+        if proceso_tad.obtener_tipo_proceso(grupo[i]) == tipo_proceso:
+            grupo.pop(i)
+            eliminados += 1
+        else:
+            i += 1
+    return eliminados
+
+def visualizar_procesoscola(lista_procesos):
+    """Muestra en pantalla la información de cada proceso en la lista"""
+    if not lista_procesos:
+        print("No hay procesos para mostrar.")
+        return
+
+    for i, proceso in enumerate(lista_procesos, start=1):
+        nombre = proceso_tad.obtener_nombre(proceso)
+        tipo = proceso_tad.obtener_tipo_proceso(proceso)
+        prioridad = proceso_tad.obtener_prioridad(proceso)
+        fecha = proceso_tad.obtener_fecha_modificacion(proceso)
+
+        print(f"Proceso {i}:")
+        print(f"  Nombre     : {nombre}")
+        print(f"  Tipo       : {tipo}")
+        print(f"  Prioridad  : {prioridad}")
+        print(f"  Modificado : {fecha.strftime('%Y-%m-%d %H:%M')}")
+        print("-" * 30)
+
+def filtrar_por_intervalo_horario(grupo, hora_inicio, hora_fin):
+    """Crea una cola con procesos del intervalo horario especificado"""
+    cola_filtrada = []
+    print(f"Filtrando procesos entre {hora_inicio} y {hora_fin}")
+    for proceso in grupo:
+        fecha_mod = proceso_tad.obtener_fecha_modificacion(proceso)
+        hora_proceso = fecha_mod.time()
+        if hora_inicio <= hora_fin:
+            if hora_inicio <= hora_proceso <= hora_fin:
+                cola_filtrada.append(proceso)
+        else:
+            # Intervalo que cruza medianoche
+            if hora_proceso >= hora_inicio or hora_proceso <= hora_fin:
+                cola_filtrada.append(proceso)
+    return cola_filtrada
 
 def main():
     """Función principal del programa"""
@@ -262,9 +304,18 @@ def main():
         elif opcion == "5":
             modificar_prioridad_por_mes(grupo_procesos)
         elif opcion == "6":
-            eliminar_procesos_por_tipo(grupo_procesos)
+            eliminar_procesos_por_tipo(grupo_procesos, proceso_tad.obtener_tipo_proceso)
         elif opcion == "7":
-            filtrar_por_intervalo_horario(grupo_procesos)
+            horario_inicio_str = input("Ingrese el horario de inicio del intervalo: (HH:MM): ")
+            horario_fin_str = input("Ingrese el horario de fin del intervalo: (HH:MM): ")
+            formato_hora = "%H:%M"
+            inicio = datetime.strptime(horario_inicio_str, formato_hora).time()
+            fin = datetime.strptime(horario_fin_str, formato_hora).time()
+            # hora_inicio = inicio.hour
+            # hora_fin = fin.hour
+            cola_resultado = filtrar_por_intervalo_horario(grupo_procesos, inicio, fin)
+            print(f"Se encontraron {len(cola_resultado)} procesos en el intervalo.")
+            visualizar_procesoscola(cola_resultado)
         elif opcion == "8":
             print("Saliendo del sistema...")
             break

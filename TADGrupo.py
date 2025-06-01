@@ -19,53 +19,6 @@ def terminar_proceso(grupo):
         return None
     return grupo.pop(0)
 
-def buscar_proceso_por_pid(grupo, pid):
-    """Busca un proceso por su PID"""
-    for proceso in grupo:
-        if proceso_tad.obtener_pid(proceso) == pid:
-            return proceso
-    return None
-
-def modificar_prioridad_por_pid(grupo, pid, nueva_prioridad):
-    """Modifica la prioridad de un proceso específico"""
-    proceso = buscar_proceso_por_pid(grupo, pid)
-    if proceso is not None:
-        proceso_tad.establecer_prioridad(proceso, nueva_prioridad)
-        return True
-    return False
-
-def modificar_prioridad_por_mes(grupo, mes):
-    """Modifica la prioridad a 'baja' para procesos del mes especificado"""
-    modificados = 0
-    for proceso in grupo:
-        fecha_mod = proceso_tad.obtener_fecha_modificacion(proceso)
-        if fecha_mod.month == mes:
-            proceso_tad.establecer_prioridad(proceso, "baja")
-            modificados += 1
-    return modificados
-
-def eliminar_procesos_por_tipo(grupo, tipo_proceso):
-    """Elimina todos los procesos del tipo especificado"""
-    eliminados = 0
-    i = 0
-    while i < len(grupo):
-        if proceso_tad.obtener_tipo_proceso(grupo[i]) == tipo_proceso:
-            grupo.pop(i)
-            eliminados += 1
-        else:
-            i += 1
-    return eliminados
-
-def filtrar_por_intervalo_horario(grupo, hora_inicio, hora_fin):
-    """Crea una cola con procesos del intervalo horario especificado"""
-    cola_filtrada = []
-    for proceso in grupo:
-        fecha_mod = proceso_tad.obtener_fecha_modificacion(proceso)
-        hora_proceso = fecha_mod.hour
-        if hora_inicio <= hora_proceso <= hora_fin:
-            cola_filtrada.append(proceso)
-    return cola_filtrada
-
 def mostrar_procesos(grupo):
     """Muestra todos los procesos del grupo"""
     if len(grupo) == 0:
